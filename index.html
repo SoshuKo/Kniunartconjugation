@@ -24,12 +24,16 @@
             } else if (tense === 'present') {
                 inputString = inputString.replace(/^(ba=|ga=|da=)/, '').replace(/-/g, '');
             } else if (tense === 'past') {
+                let replaced = false;
                 inputString = inputString.replace(/-hr|-uhr|-f|-uf|-x|-ux/g, function(match) {
                     if (match === '-hr' || match === '-f' || match === '-x') {
-                        inputString = inputString.replace(/-ab/g, '-b').replace(/-en/g, '-n').replace(/-ed/g, '-d').replace(/-et‘/g, '-t’');
+                        replaced = true;
                     }
                     return '';
                 });
+                if (replaced) {
+                    inputString = inputString.replace(/-ab/g, '-b').replace(/-en/g, '-n').replace(/-ed/g, '-d').replace(/-et‘/g, '-t’');
+                }
                 inputString = inputString.replace(/-a$/, '-e').replace(/-ia$/, '-ie').replace(/[=-]/g, '');
             }
 
