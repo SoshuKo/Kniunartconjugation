@@ -9,6 +9,12 @@
         <option value="future">未来形</option>
         <option value="present">現在形</option>
         <option value="past">過去形</option>
+        <option value="gerund_future">動名詞未来形</option>
+        <option value="gerund_present">動名詞現在形</option>
+        <option value="imperative">命令形</option>
+        <option value="subjunctive_future">接続法未来形</option>
+        <option value="subjunctive_present">接続法現在形</option>
+        <option value="subjunctive_past">接続法過去形</option>
     </select>
     <input type="text" id="inputString" placeholder="文字列を入力">
     <button onclick="processString()">処理</button>
@@ -35,6 +41,38 @@
                     inputString = inputString.replace(/-ab/g, '-b').replace(/-en/g, '-n').replace(/-ed/g, '-d').replace(/-et‘/g, '-t’');
                 }
                 inputString = inputString.replace(/-a$/, '-e').replace(/-ia$/, '-ie').replace(/[=-]/g, '');
+            } else if (tense === 'gerund_future') {
+                inputString = inputString.replace(/-a$/, '-e').replace(/-ia$/, '-ie').replace(/[=-]/g, '');
+            } else if (tense === 'gerund_present') {
+                inputString = inputString.replace(/^(ba=|ga=|da=)/, '').replace(/-a$/, '-e').replace(/-ia$/, '-ie').replace(/-/g, '');
+            } else if (tense === 'imperative') {
+                let replaced = false;
+                inputString = inputString.replace(/-hr|-uhr|-f|-uf|-x|-ux/g, function(match) {
+                    if (match === '-hr' || match === '-f' || match === '-x') {
+                        replaced = true;
+                    }
+                    return '';
+                });
+                if (replaced) {
+                    inputString = inputString.replace(/-ab/g, '-b').replace(/-en/g, '-n').replace(/-ed/g, '-d').replace(/-et‘/g, '-t’');
+                }
+                inputString = inputString.replace(/[=-]/g, '');
+            } else if (tense === 'subjunctive_future') {
+                inputString = inputString.replace(/-a$/, '-u').replace(/-ia$/, '-iú').replace(/[=-]/g, '');
+            } else if (tense === 'subjunctive_present') {
+                inputString = inputString.replace(/^(ba=|ga=|da=)/, '').replace(/-a$/, '-u').replace(/-ia$/, '-iú').replace(/-/g, '');
+            } else if (tense === 'subjunctive_past') {
+                let replaced = false;
+                inputString = inputString.replace(/-hr|-uhr|-f|-uf|-x|-ux/g, function(match) {
+                    if (match === '-hr' || match === '-f' || match === '-x') {
+                        replaced = true;
+                    }
+                    return '';
+                });
+                if (replaced) {
+                    inputString = inputString.replace(/-ab/g, '-b').replace(/-en/g, '-n').replace(/-ed/g, '-d').replace(/-et‘/g, '-t’');
+                }
+                inputString = inputString.replace(/-a$/, '-u').replace(/-ia$/, '-iú').replace(/[=-]/g, '');
             }
 
             document.getElementById('outputString').innerText = inputString;
