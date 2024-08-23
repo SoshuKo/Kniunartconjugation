@@ -5,6 +5,11 @@
     <title>文字列処理</title>
 </head>
 <body>
+    <select id="verbType">
+        <option value="intransitive">自動詞</option>
+        <option value="transitive">他動詞</option>
+        <option value="ditransitive">間目動詞</option>
+    </select>
     <select id="tense">
         <option value="future">未来形</option>
         <option value="present">現在形</option>
@@ -16,15 +21,107 @@
         <option value="subjunctive_present">接続法現在形</option>
         <option value="subjunctive_past">接続法過去形</option>
     </select>
+    <select id="person">
+        <option value="first">一人称</option>
+        <option value="second">二人称</option>
+        <option value="third">三人称</option>
+    </select>
+    <select id="aspect">
+        <option value="inceptive">起動相</option>
+        <option value="continuative">継続相</option>
+        <option value="perfective">完了相</option>
+        <option value="prospective">未動相</option>
+    </select>
+    <input type="checkbox" id="passive">受動態</input>
+    <input type="checkbox" id="causative">使役</input>
+    <input type="checkbox" id="number">数</input>
     <input type="text" id="inputString" placeholder="文字列を入力">
     <button onclick="processString()">処理</button>
     <p id="outputString"></p>
 
     <script>
         function processString() {
+            const verbType = document.getElementById('verbType').value;
             const tense = document.getElementById('tense').value;
+            const person = document.getElementById('person').value;
+            const aspect = document.getElementById('aspect').value;
+            const passive = document.getElementById('passive').checked;
+            const causative = document.getElementById('causative').checked;
+            const number = document.getElementById('number').checked;
             let inputString = document.getElementById('inputString').value;
 
+            // 動詞の種類の処理
+            if (verbType === 'intransitive') {
+                inputString = inputString.replace(/^(ga=|da=)/, 'ba=').replace(/-uf|-ux/g, '-uhr').replace(/-f|-x/g, '-hr');
+            } else if (verbType === 'transitive') {
+                inputString = inputString.replace(/^(ba=|da=)/, 'ga=').replace(/-uhr|-ux/g, '-uf').replace(/-hr|-x/g, '-f');
+            } else if (verbType === 'ditransitive') {
+                inputString = inputString.replace(/^(ba=|ga=)/, 'da=').replace(/-uf|-uhr/g, '-ux').replace(/-f|-hr/g, '-x');
+            }
+
+            // 語根の太字化
+            inputString = inputString.replace(/=(.*?)-/, function(match, p1) {
+                return '=' + '**' + p1 + '**' + '-';
+            });
+
+            // 人称の処理
+            if (person === 'first') {
+                inputString = inputString.replace(/^(ba=|ga=|da=)/, function(match) {
+                    return match + 'mi-';
+                });
+            } else if (person === 'second') {
+                inputString = inputString.replace(/^(ba=|ga=|da=)/, function(match) {
+                    return match + 'zhi-';
+                });
+            }
+
+            // 受動態の処理
+            if (passive) {
+                inputString = inputString.replace(/=(.*?)-/, function(match, p1) {
+                    if (/[aeiouíú]$/.test(p1)) {
+                        return '=' + p1 + '-r-';
+                    } else {
+                        return '=' + p1 + '-er-';
+                    }
+                }).replace(/-hr|-f|-x/g, function(match) {
+                    if (match === '-hr') return '-uhr';
+                    if (match === '-f') return '-uf';
+                    if (match === '-x') return '-ux';
+                });
+            }
+
+            // 使役の処理
+            if (causative) {
+                inputString = inputString.replace(/=(.*?)-/, function(match, p1) {
+                    if (/[aeiouíú]$/.test(p1) && !passive) {
+                        return '=' + p1 + '-v-';
+                    } else {
+                        return '=' + p1 + '-av-';
+                    }
+                }).replace(/-hr|-f|-x/g, function(match) {
+                    if (match === '-hr') return '-uhr';
+                    if (match === '-f') return '-uf';
+                    if (match === '-x') return '-ux';
+                });
+            }
+
+            // 相の処理
+            if (aspect === 'inceptive') {
+                inputString = inputString.replace(/-en|-ed|-at‘/g, '-ab').replace(/-n|-d|-t’/g, '-b');
+            } else if (aspect === 'continuative') {
+                inputString = inputString.replace(/-ab|-ed|-at‘/g, '-en').replace(/-b|-d|-t’/g, '-n');
+            } else if (aspect === 'perfective') {
+                inputString = inputString.replace(/-en|-ab|-at‘/g, '-ed').replace(/-n|-b|-t’/g, '-d');
+            } else if (aspect === 'prospective') {
+                inputString = inputString.replace(/-en|-ed|-ab/g, '-at‘').replace(/-n|-d|-t’/g, '-b');
+            }
+
+            // 数の処理
+            if (number) {
+                inputString = inputString.replace(/-a$/, '-ia').replace(/-e$/, '-ie').replace(/-u$/, '-iú');
+            }
+
+            // 時制の処理
             if (tense === 'future') {
                 inputString = inputString.replace(/[=-]/g, '');
             } else if (tense === 'present') {
