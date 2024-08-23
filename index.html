@@ -61,7 +61,7 @@
 
             // 語根の太字化
             inputString = inputString.replace(/=(.*?)-/, function(match, p1) {
-                return '=' + <b>p1</b> + '**' + '-';
+                return '=<strong>' + p1 + '</strong>-';
             });
 
             // 人称の処理
