@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>文字列処理</title>
+    <title>クニューン語動詞活用ジェネレーター</title>
 </head>
 <body>
     <select id="verbType">
@@ -32,12 +32,12 @@
         <option value="perfective">完了相</option>
         <option value="prospective">未動相</option>
     </select>
-    <input type="checkbox" id="passive">受動態</input>
-    <input type="checkbox" id="causative">使役</input>
-    <input type="checkbox" id="number">数</input>
-    <input type="text" id="inputString" placeholder="文字列を入力">
+    <input type="checkbox" id="number">複数</input>
+    <input type="text" id="inputString" placeholder="動詞を入力">
     <button onclick="processString()">処理</button>
-    <p id="outputString"></p>
+    <p id="outputString">
+    <p>注意: クラス転換と受動態・使役は非対応です。人力でお願いします。
+</p>
 
     <script>
         function processString() {
@@ -45,8 +45,6 @@
             const tense = document.getElementById('tense').value;
             const person = document.getElementById('person').value;
             const aspect = document.getElementById('aspect').value;
-            const passive = document.getElementById('passive').checked;
-            const causative = document.getElementById('causative').checked;
             const number = document.getElementById('number').checked;
             let inputString = document.getElementById('inputString').value;
 
@@ -67,36 +65,6 @@
             } else if (person === 'second') {
                 inputString = inputString.replace(/^(ba=|ga=|da=)/, function(match) {
                     return match + 'zhi-';
-                });
-            }
-
-            // 受動態の処理
-            if (passive) {
-                inputString = inputString.replace(/=(.*?)-/, function(match, p1) {
-                    if (/[aeiouíú]$/.test(p1)) {
-                        return '=' + p1 + '-r-';
-                    } else {
-                        return '=' + p1 + '-er-';
-                    }
-                }).replace(/-hr|-f|-x/g, function(match) {
-                    if (match === '-hr') return '-uhr';
-                    if (match === '-f') return '-uf';
-                    if (match === '-x') return '-ux';
-                });
-            }
-
-            // 使役の処理
-            if (causative) {
-                inputString = inputString.replace(/=(.*?)-/, function(match, p1) {
-                    if (/[aeiouíú]$/.test(p1) && !passive) {
-                        return '=' + p1 + '-v-';
-                    } else {
-                        return '=' + p1 + '-av-';
-                    }
-                }).replace(/-hr|-f|-x/g, function(match) {
-                    if (match === '-hr') return '-uhr';
-                    if (match === '-f') return '-uf';
-                    if (match === '-x') return '-ux';
                 });
             }
 
