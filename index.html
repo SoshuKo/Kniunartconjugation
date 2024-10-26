@@ -153,9 +153,7 @@
                 let replaced = false;
                 inputString = inputString.replace(/-hr|-uhr|-f|-uf|-x|-ux/g, match => (replaced = true, ''));
                 if (replaced) inputString = inputString.replace(/-ab/g, '-b').replace(/-en/g, '-n').replace(/-ed/g, '-d').replace(/-et‘/g, '-t’');
-                inputString = inputString.replace(/-a$/, '-e
-
-').replace(/-e$/, '-i').replace(/-u$/, '-o');
+                inputString = inputString.replace(/-a$/, '-e').replace(/-e$/, '-i').replace(/-u$/, '-o');
             }
 
             document.getElementById("outputString").innerText = inputString;
