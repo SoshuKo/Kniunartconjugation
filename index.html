@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <title>クニューン語動詞活用ジェネレーター</title>
     <style>
-        /* 背景と全体レイアウト */
+        /* 背景と全体のレイアウト */
         body {
             background-color: #F09000;
             font-family: Arial, sans-serif;
@@ -15,21 +13,18 @@
             padding: 20px;
         }
 
-        /* 各入力エリアのレイアウト */
-        .input-row {
+        /* セレクトボックスや入力ボックス、ボタンのスタイル */
+        .control-panel {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
             flex-wrap: wrap;
-            margin-bottom: 15px;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
         }
 
-        /* セレクトボックスや入力ボックス、ボタンのスタイル */
-        select, input[type="text"], button {
+        select, input[type="text"], input[type="checkbox"], button {
             font-size: 1em;
-            padding: 5px 10px;
-            margin: 4px;
+            padding: 5px;
             border: none;
             border-radius: 5px;
             background-color: #FFFFFF;
@@ -45,21 +40,23 @@
             color: #FFFFFF;
         }
 
-        /* ボタンのスタイル */
+        /* ボタンの追加スタイル */
         button {
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         /* チェックボックスとラベルのスタイル */
         input[type="checkbox"] {
-            transform: scale(1.1);
+            transform: scale(1);
+            margin-right: 5px;
             cursor: pointer;
         }
+
         label {
             font-size: 1em;
-            margin-right: 10px;
+            margin-right: 5px;
         }
 
         /* 出力表示のスタイル */
@@ -69,7 +66,7 @@
             color: #333333;
             background-color: #FFFFFF;
             padding: 10px;
-            margin-top: 15px;
+            margin-top: 10px;
             border-radius: 8px;
             width: 80%;
             text-align: center;
@@ -78,56 +75,93 @@
 
         /* 注意事項のスタイル */
         p {
-            font-size: 0.9em;
+            font-size: 1em;
             font-style: italic;
             color: #FFFFFF;
-            margin-top: 20px;
+            margin-top: 10px;
+        }
+
+        /* リンクボタン */
+        #dictionaryButton {
+            font-size: 1em;
+            padding: 10px 20px;
+            background-color: #FFA733;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        #dictionaryButton:hover {
+            background-color: #FFFFFF;
+            color: #F09000;
         }
     </style>
 </head>
+
 <body>
-    <select id="verbType">
-        <option value="intransitive">自動詞</option>
-        <option value="transitive">他動詞</option>
-        <option value="ditransitive">間目動詞</option>
-    </select>
-    <select id="tense">
-        <option value="future">未来形</option>
-        <option value="present">現在形</option>
-        <option value="past">過去形</option>
-        <option value="gerund_future">動名詞未来形</option>
-        <option value="gerund_present">動名詞現在形</option>
-        <option value="imperative">命令形</option>
-        <option value="subjunctive_future">接続法未来形</option>
-        <option value="subjunctive_present">接続法現在形</option>
-        <option value="subjunctive_past">接続法過去形</option>
-    </select>
-    <select id="person">
-        <option value="first">一人称</option>
-        <option value="second">二人称</option>
-        <option value="third">三人称</option>
-    </select>
-    <select id="aspect">
-        <option value="inceptive">起動相</option>
-        <option value="continuative">継続相</option>
-        <option value="perfective">完了相</option>
-        <option value="prospective">未動相</option>
-    </select>
-    <input type="checkbox" id="number">複数</input>
-    <input type="checkbox" id="classConversion">クラス転換</input>
-    <select id="class">
-        <option value="class1">クラス1 (男性)</option>
-        <option value="class2">クラス2 (女性)</option>
-        <option value="class3">クラス3 (中性)</option>
-        <option value="class4">クラス4 (抽象)</option>
-        <option value="class5">クラス5 (物質)</option>
-        <option value="class6">クラス6 (集合)</option>
-    </select>
-    <input type="text" id="inputString" placeholder="動詞を入力">
-    <button onclick="processString()">処理</button>
-    <p id="outputString">
-    <p>注意: 受動態・使役は非対応です。人力でお願いします。
-</p>
+    <h1>クニューン語動詞活用ジェネレーター</h1>
+
+    <div class="control-panel">
+        <label for="verbType">動詞の種類:</label>
+        <select id="verbType">
+            <option value="intransitive">自動詞</option>
+            <option value="transitive">他動詞</option>
+            <option value="ditransitive">間目動詞</option>
+        </select>
+
+        <label for="tense">時制:</label>
+        <select id="tense">
+            <option value="future">未来形</option>
+            <option value="present">現在形</option>
+            <option value="past">過去形</option>
+            <option value="gerund_future">動名詞未来形</option>
+            <option value="gerund_present">動名詞現在形</option>
+            <option value="imperative">命令形</option>
+            <option value="subjunctive_future">接続法未来形</option>
+            <option value="subjunctive_present">接続法現在形</option>
+            <option value="subjunctive_past">接続法過去形</option>
+        </select>
+
+        <label for="person">人称:</label>
+        <select id="person">
+            <option value="first">一人称</option>
+            <option value="second">二人称</option>
+            <option value="third">三人称</option>
+        </select>
+
+        <label for="aspect">相:</label>
+        <select id="aspect">
+            <option value="inceptive">起動相</option>
+            <option value="continuative">継続相</option>
+            <option value="perfective">完了相</option>
+            <option value="prospective">未動相</option>
+        </select>
+
+        <input type="checkbox" id="number"><label for="number">複数</label>
+        <input type="text" id="inputString" placeholder="動詞を入力">
+
+        <input type="checkbox" id="classConversion"><label for="classConversion">クラス転換</label>
+
+        <label for="class">クラス:</label>
+        <select id="class">
+            <option value="class1">クラス1 (男性)</option>
+            <option value="class2">クラス2 (女性)</option>
+            <option value="class3">クラス3 (中性)</option>
+            <option value="class4">クラス4 (抽象)</option>
+            <option value="class5">クラス5 (物質)</option>
+            <option value="class6">クラス6 (集合)</option>
+        </select>
+
+        <button onclick="processString()">処理</button>
+    </div>
+
+    <p id="outputString">出力結果がここに表示されます</p>
+    <a id="dictionaryButton" href="https://soshuko.github.io/KnDIC/" target="_blank">クニューン語辞書へ</a>
+    <p>注意: 受動態・使役は非対応です。人力でお願いします。</p>
+</body>
 
     <script>
         function processString() {
