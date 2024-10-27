@@ -116,7 +116,7 @@
     <input type="text" id="inputString" placeholder="動詞を入力">
     <button onclick="processString()">処理</button>
     <p id="outputString">
-    <p>注意: クラス転換と受動態・使役は非対応です。人力でお願いします。
+    <p>注意: 受動態・使役は非対応です。人力でお願いします。
 </p>
 
     <script>
@@ -193,7 +193,7 @@
             } else if (aspect === 'perfective') {
                 inputString = inputString.replace(/-en|-ab|-at‘/g, '-ed').replace(/-n|-b|-t’/g, '-d');
             } else if (aspect === 'prospective') {
-                inputString = inputString.replace(/-en|-ed|-ab/g, '-at‘').replace(/-n|-d|-t’/g, '-b');
+                inputString = inputString.replace(/-en|-ed|-ab/g, '-at’').replace(/-n|-d|-t’/g, '-t’');
             }
 
             // 数の処理
