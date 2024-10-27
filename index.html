@@ -231,13 +231,13 @@
 
             // 相の処理
             if (aspect === 'inceptive') {
-                inputString = inputString.replace(/-en|-ed|-at‘/g, '-ab').replace(/-n|-d|-t’/g, '-b');
+                inputString = inputString.replace(/-en|-ed|-at’/g, '-ab').replace(/-n|-d|-t’/g, '-b');
             } else if (aspect === 'continuative') {
-                inputString = inputString.replace(/-ab|-ed|-at‘/g, '-en').replace(/-b|-d|-t’/g, '-n');
+                inputString = inputString.replace(/-ab|-ed|-at’/g, '-en').replace(/-b|-d|-t’/g, '-n');
             } else if (aspect === 'perfective') {
-                inputString = inputString.replace(/-en|-ab|-at‘/g, '-ed').replace(/-n|-b|-t’/g, '-d');
+                inputString = inputString.replace(/-en|-ab|-at’/g, '-ed').replace(/-n|-b|-t’/g, '-d');
             } else if (aspect === 'prospective') {
-                inputString = inputString.replace(/-en|-ed|-ab/g, '-at’').replace(/-n|-d|-t’/g, '-t’');
+                inputString = inputString.replace(/-en|-ed|-ab/g, "-at’").replace(/-n|-d|-t’/g, "-t’");
             }
 
             // 数の処理
