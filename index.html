@@ -3,6 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>クニューン語動詞活用ジェネレーター</title>
+    <style>
+        body {
+            background-color: #F09000;
+            font-family: Arial, sans-serif;
+        }
+        select, input[type="text"], button {
+            font-size: 1em;
+            padding: 5px;
+            margin: 5px;
+        }
+        #outputString {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #333333;
+        }
+    </style>
 </head>
 <body>
     <select id="verbType">
@@ -33,6 +49,15 @@
         <option value="prospective">未動相</option>
     </select>
     <input type="checkbox" id="number">複数</input>
+    <input type="checkbox" id="classConversion">クラス転換</input>
+    <select id="class">
+        <option value="class1">クラス1 (男性)</option>
+        <option value="class2">クラス2 (女性)</option>
+        <option value="class3">クラス3 (中性)</option>
+        <option value="class4">クラス4 (抽象)</option>
+        <option value="class5">クラス5 (物質)</option>
+        <option value="class6">クラス6 (集合)</option>
+    </select>
     <input type="text" id="inputString" placeholder="動詞を入力">
     <button onclick="processString()">処理</button>
     <p id="outputString">
@@ -46,6 +71,8 @@
             const person = document.getElementById('person').value;
             const aspect = document.getElementById('aspect').value;
             const number = document.getElementById('number').checked;
+            const classConversion = document.getElementById('classConversion').checked;
+            const classType = document.getElementById('class').value;
             let inputString = document.getElementById('inputString').value;
 
             // 動詞の種類の処理
@@ -57,6 +84,41 @@
                 inputString = inputString.replace(/^(ba=|ga=)/, 'da=').replace(/-uf|-uhr/g, '-ux').replace(/-f|-hr/g, '-x');
             }
 
+            // クラス転換の処理
+            if (classConversion) {
+                const match = inputString.match(/=(.*?)-/);
+                const root = match ? match[1] : "";
+                let modifiedRoot = root;
+
+                if (classType === 'class2') {
+                    modifiedRoot = modifiedRoot.replace(/a/g, 'e');
+                } else if (classType === 'class3') {
+                    modifiedRoot = modifiedRoot.replace(/ai/g, 'úi').replace(/au/g, 'íu').replace(/ia/g, 'iú').replace(/ua/g, 'uí').replace(/a/g, 'i');
+                } else if (classType === 'class5') {
+                    modifiedRoot = modifiedRoot.replace(/a/g, 'e');
+                } else if (classType === 'class6') {
+                    modifiedRoot = modifiedRoot.replace(/ai/g, 'úi').replace(/au/g, 'íu').replace(/ia/g, 'iú').replace(/ua/g, 'uí').replace(/a/g, 'i');
+                }
+
+                // クラスS転換規則
+                if (classType === 'class4' || classType === 'class5' || classType === 'class6') {
+                    const consonant = modifiedRoot.match(/^[^aeiou]/);
+                    if (consonant) {
+                        if (/^(b|bl|bm|br|d|dl|dn|dr|dz|dzl|f|fl|fr|g|gh|gl|gn|gr|j|jr|r|s|v|z|zh|zhr|zl)/.test(consonant[0])) {
+                            modifiedRoot = (classType === 'class4' ? 'sa' : classType === 'class5' ? 'se' : 'si') + modifiedRoot;
+                        } else if (consonant[0] === 'q') {
+                            modifiedRoot = modifiedRoot.replace(/^q/, 's’');
+                        } else if (consonant[0] === 'x') {
+                            modifiedRoot = modifiedRoot.replace(/^x/, 'sh’');
+                        } else {
+                            modifiedRoot = 's' + modifiedRoot;
+                        }
+                    }
+                }
+                
+                inputString = inputString.replace(`=${root}-`, `=${modifiedRoot}-`);
+            }
+            
             // 人称の処理
             if (person === 'first') {
                 inputString = inputString.replace(/^(ba=|ga=|da=)/, function(match) {
