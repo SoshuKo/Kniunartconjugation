@@ -3,38 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>クニューン語動詞活用ジェネレーター</title>
-    <style>
-        body {
-            background-color: #FFF2E1;
-            font-family: Arial, sans-serif;
-            color: #333;
-        }
-        h1 {
-            color: #F09000;
-        }
-        select, input[type="text"], button {
-            padding: 8px;
-            margin: 5px;
-            border: 2px solid #F09000;
-            border-radius: 5px;
-        }
-        button {
-            background-color: #F09000;
-            color: white;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #E08000;
-        }
-        #outputString {
-            margin-top: 10px;
-            font-weight: bold;
-            color: #F09000;
-        }
-    </style>
 </head>
 <body>
-    <h1>クニューン語動詞活用ジェネレーター</h1>
     <select id="verbType">
         <option value="intransitive">自動詞</option>
         <option value="transitive">他動詞</option>
@@ -62,24 +32,12 @@
         <option value="perfective">完了相</option>
         <option value="prospective">未動相</option>
     </select>
-    <input type="checkbox" id="number">複数</input><br>
-
-    <!-- クラス転換チェックボックスとクラス選択 -->
-    <input type="checkbox" id="classConversion">クラス転換</input>
-    <select id="classType">
-        <option value="class1">クラス1 (男性)</option>
-        <option value="class2">クラス2 (女性)</option>
-        <option value="class3">クラス3 (中性)</option>
-        <option value="class4">クラス4 (抽象)</option>
-        <option value="class5">クラス5 (物質)</option>
-        <option value="class6">クラス6 (集合)</option>
-    </select><br>
-
+    <input type="checkbox" id="number">複数</input>
     <input type="text" id="inputString" placeholder="動詞を入力">
     <button onclick="processString()">処理</button>
-
-    <p id="outputString"></p>
-    <p>注意: 受動態・使役は非対応です。人力でお願いします。</p>
+    <p id="outputString">
+    <p>注意: クラス転換と受動態・使役は非対応です。人力でお願いします。
+</p>
 
     <script>
         function processString() {
@@ -88,8 +46,6 @@
             const person = document.getElementById('person').value;
             const aspect = document.getElementById('aspect').value;
             const number = document.getElementById('number').checked;
-            const classConversion = document.getElementById('classConversion').checked;
-            const classType = document.getElementById('classType').value;
             let inputString = document.getElementById('inputString').value;
 
             // 動詞の種類の処理
@@ -99,29 +55,6 @@
                 inputString = inputString.replace(/^(ba=|da=)/, 'ga=').replace(/-uhr|-ux/g, '-uf').replace(/-hr|-x/g, '-f');
             } else if (verbType === 'ditransitive') {
                 inputString = inputString.replace(/^(ba=|ga=)/, 'da=').replace(/-uf|-uhr/g, '-ux').replace(/-f|-hr/g, '-x');
-            }
-
-            // クラス転換の処理
-            if (classConversion) {
-                let root = inputString.match(/=(.+?)-/);
-                root = root ? root[1] : '';
-
-                if (classType === 'class2') {
-                    root = root.replace(/a/g, 'e');
-                } else if (classType === 'class3') {
-                    root = root.replace(/ai/g, 'úi').replace(/au/g, 'íu').replace(/ia/g, 'iú').replace(/ua/g, 'uí').replace(/a/g, 'i');
-                } else if (classType === 'class4' || classType === 'class5' || classType === 'class6') {
-                    if (/^(b|bl|bm|br|d|dl|dn|dr|dz|dzl|f|fl|fr|g|gh|gl|gn|gr|j|jr|r|s|v|z|zh|zhr|zl)/.test(root)) {
-                        root = (classType === 'class4' ? 'sa' : classType === 'class5' ? 'se' : 'si') + root;
-                    } else if (/^q/.test(root)) {
-                        root = root.replace(/^q/, "s'");
-                    } else if (/^x/.test(root)) {
-                        root = root.replace(/^x/, "sh'");
-                    } else {
-                        root = 's' + root;
-                    }
-                }
-                inputString = inputString.replace(/=(.+?)-/, '=' + root + '-');
             }
 
             // 人称の処理
@@ -157,12 +90,48 @@
             } else if (tense === 'present') {
                 inputString = inputString.replace(/^(ba=|ga=|da=)/, '').replace(/-/g, '');
             } else if (tense === 'past') {
-                inputString = inputString.replace(/-hr|-uhr|-f|-uf|-x|-ux/g, '');
+                let replaced = false;
+                inputString = inputString.replace(/-hr|-uhr|-f|-uf|-x|-ux/g, function(match) {
+                    if (match === '-hr' || match === '-f' || match === '-x') {
+                        replaced = true;
+                    }
+                    return '';
+                });
+                if (replaced) {
+                    inputString = inputString.replace(/-ab/g, '-b').replace(/-en/g, '-n').replace(/-ed/g, '-d').replace(/-et‘/g, '-t’');
+                }
                 inputString = inputString.replace(/-a$/, '-e').replace(/-ia$/, '-ie').replace(/[=-]/g, '');
+            } else if (tense === 'gerund_future') {
+                inputString = inputString.replace(/-a$/, '-e').replace(/-ia$/, '-ie').replace(/[=-]/g, '');
+            } else if (tense === 'gerund_present') {
+                inputString = inputString.replace(/^(ba=|ga=|da=)/, '').replace(/-a$/, '-e').replace(/-ia$/, '-ie').replace(/-/g, '');
             } else if (tense === 'imperative') {
-                inputString = inputString.replace(/-hr|-uhr|-f|-uf|-x|-ux/g, '');
+                let replaced = false;
+                inputString = inputString.replace(/-hr|-uhr|-f|-uf|-x|-ux/g, function(match) {
+                    if (match === '-hr' || match === '-f' || match === '-x') {
+                        replaced = true;
+                    }
+                    return '';
+                });
+                if (replaced) {
+                    inputString = inputString.replace(/-ab/g, '-b').replace(/-en/g, '-n').replace(/-ed/g, '-d').replace(/-et‘/g, '-t’');
+                }
                 inputString = inputString.replace(/[=-]/g, '');
             } else if (tense === 'subjunctive_future') {
+                inputString = inputString.replace(/-a$/, '-u').replace(/-ia$/, '-iú').replace(/[=-]/g, '');
+            } else if (tense === 'subjunctive_present') {
+                inputString = inputString.replace(/^(ba=|ga=|da=)/, '').replace(/-a$/, '-u').replace(/-ia$/, '-iú').replace(/-/g, '');
+            } else if (tense === 'subjunctive_past') {
+                let replaced = false;
+                inputString = inputString.replace(/-hr|-uhr|-f|-uf|-x|-ux/g, function(match) {
+                    if (match === '-hr' || match === '-f' || match === '-x') {
+                        replaced = true;
+                    }
+                    return '';
+                });
+                if (replaced) {
+                    inputString = inputString.replace(/-ab/g, '-b').replace(/-en/g, '-n').replace(/-ed/g, '-d').replace(/-et‘/g, '-t’');
+                }
                 inputString = inputString.replace(/-a$/, '-u').replace(/-ia$/, '-iú').replace(/[=-]/g, '');
             }
 
